@@ -5,9 +5,9 @@
 # 使用步骤
 1. 安装依赖 
 
-  Python3 依赖库列表：beautifulsoup4, requests, selenium, prettytable (pip安装即可)
+  ​	Python3 依赖库列表：beautifulsoup4, requests, selenium, prettytable (pip安装即可)
 
-  Phantomjs 模拟浏览器访问 (官网下载即可，记得修改代码中的本地调用地址)
+  ​	Phantomjs 模拟浏览器访问 (官网下载即可，记得修改代码中的本地调用地址)
 
 2. 在目录下创建my.txt，文本格式：每行填写一个需要查询的基金号码,结尾不留空行,并以utf-8编码保存
 
