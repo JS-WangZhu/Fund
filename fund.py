@@ -155,7 +155,7 @@ if os.path.exists('./my.txt'):
 
         tb.add_row([i,tmpName,guzhi,gutime,jingzhi,jingtime])
     
-    tb1 = pt.PrettyTable(['上证指数','上证涨跌','深证指数','深证涨跌','创业板指数','创业板涨跌'])
+    tb1 = pt.PrettyTable(['上证指数','上证涨跌','深证成指','深证涨跌','创业板指','创业板涨跌'])
     tb1.add_row([shangz_jg,shangz_zd,shenz_jg,shenz_zd,chuangyb_jg,chuangyb_zd])
     print(tb1)
     print(tb)
