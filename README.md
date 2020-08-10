@@ -5,7 +5,7 @@
 # 安装部署
 1. 安装依赖 
 
-    ① Python3 依赖库列表：beautifulsoup4, requests, selenium, prettytable (pip安装即可)
+    ① Python3 依赖库列表：beautifulsoup4, requests, selenium, prettytable, colorama (pip安装即可)
     ② Phantomjs 用于模拟浏览器访问 (记得修改代码中的本地调用地址，项目dependency文件夹下提供了macOS版本，其他操作系统版本请自行前往官网下载)
 
 2. 在目录下创建my.txt，文本格式：每行填写一个需要查询的基金号码,结尾不留空行,并以utf-8编码保存

@@ -8,12 +8,29 @@ import re
 import prettytable as pt
 from selenium import webdriver
 import warnings
+from colorama import init, Fore, Back, Style
 warnings.filterwarnings("ignore")
 
 #-----------------------------------------------------
 #根据实际情况修改，修改值为phantomjs的解压目录/bin/phantomjs
 executable_path = '/Users/wangzhu/myFile/OpenPackages/phantomjs-2.1.1-macosx/bin/phantomjs'
 #-----------------------------------------------------
+
+# 定义颜色类
+init(autoreset=False)
+class Colored(object):
+    #  前景色:红色  背景色:默认
+    def red(self, s):
+        return Fore.LIGHTRED_EX + s + Fore.RESET
+    #  前景色:绿色  背景色:默认
+    def green(self, s):
+        return Fore.LIGHTGREEN_EX + s + Fore.RESET
+    def yellow(self, s):
+        return Fore.LIGHTYELLOW_EX + s + Fore.RESET
+    def white(self,s):
+        return Fore.LIGHTWHITE_EX + s + Fore.RESET
+    def blue(self,s):
+        return Fore.LIGHTBLUE_EX + s + Fore.RESET
 
 
 # 获取所有基金信息
@@ -98,10 +115,28 @@ def getDapan(executable_path):
     chuangyb_zd = jiage[7].get_text()
     return shangz_jg,shangz_zd,shenz_jg,shenz_zd,chuangyb_jg,chuangyb_zd
     
+# 判断基金红绿
+def compareNum(s):
+    color = Colored()
+    if float(str(s)[:-1])>0.00:
+        return color.red(s)
+    elif float(str(s)[:-1])<0.00:
+        return color.green(s)
+
+# 判断大盘红绿
+def compareDapanNum(s1,s2):
+    color = Colored()
+    if float(str(s1)[:-1])>0.00:
+        return color.red('+'+s1),color.red(s2)
+    elif float(str(s1)[:-1])<0.00:
+        return color.green(s1),color.green(s2)
 
 if os.path.exists('./my.txt'):
     f = open('./my.txt','r')
     shangz_jg,shangz_zd,shenz_jg,shenz_zd,chuangyb_jg,chuangyb_zd = getDapan(executable_path)
+    shangz_zd,shangz_jg = compareDapanNum(shangz_zd,shangz_jg)
+    shenz_zd,shenz_jg = compareDapanNum(shenz_zd,shenz_jg)
+    chuangyb_zd,chuangyb_jg = compareDapanNum(chuangyb_zd,chuangyb_jg)
     tb = pt.PrettyTable()
     
     tb.field_names = ["基金代码", "基金名称", "估值", "估值更新", "净值", "净值更新"]
@@ -114,7 +149,10 @@ if os.path.exists('./my.txt'):
         try:
             guzhi,gutime,jingzhi,jingtime = get_value(tmpUrl, executable_path)
         except:
-            continue    
+            continue
+        guzhi = compareNum(guzhi)
+        jingzhi = compareNum(jingzhi)
+
         tb.add_row([i,tmpName,guzhi,gutime,jingzhi,jingtime])
     
     tb1 = pt.PrettyTable(['上证指数','上证涨跌','深证指数','深证涨跌','创业板指数','创业板涨跌'])
