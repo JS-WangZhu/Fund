@@ -4,6 +4,7 @@
 
 # 使用步骤
 1. 安装依赖 
+
   Python3 依赖库列表：beautifulsoup4, requests, selenium, prettytable (pip安装即可)
 
   Phantomjs 模拟浏览器访问 (官网下载即可，记得修改代码中的本地调用地址)
