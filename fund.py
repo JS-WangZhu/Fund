@@ -1,5 +1,3 @@
-# 查询具体基金
-
 import os
 import pickle
 import requests
@@ -7,9 +5,15 @@ from bs4 import BeautifulSoup
 import re
 import prettytable as pt
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 import warnings
 from colorama import init, Fore, Back, Style
 warnings.filterwarnings("ignore")
+
+chrome_options=Options()
+#设置chrome浏览器无界面模式
+chrome_options.add_argument('--headless')
+
 
 #-----------------------------------------------------
 #根据实际情况修改，修改值为phantomjs的解压目录/bin/phantomjs
@@ -76,6 +80,7 @@ def get_value(url,executable_path):
     #proxies={'http':'http://113.195.20.205:9999','http':'http://123.55.102.44:9999'}
     #res = requests.get(url,headers=headers,proxies=proxies)
     browser = webdriver.PhantomJS(executable_path=executable_path)
+    # browser = webdriver.Chrome(chrome_options=chrome_options)
     browser.get(url)
     res = browser.page_source
     soup = BeautifulSoup(res, 'html.parser',from_encoding="gb18030")
@@ -100,6 +105,7 @@ def getDapan(executable_path):
     url = 'http://quote.eastmoney.com/center/qqzs.html'
     headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/21.0.1180.71 Safari/537.1 LBBROWSER'}
     browser = webdriver.PhantomJS(executable_path=executable_path)
+    # browser = webdriver.Chrome(chrome_options=chrome_options)
     browser.get(url)
     res = browser.page_source
     soup = BeautifulSoup(res, 'lxml',from_encoding="gb18030")
@@ -115,11 +121,14 @@ def getDapan(executable_path):
     chuangyb_zd = jiage[7].get_text()
     return shangz_jg,shangz_zd,shenz_jg,shenz_zd,chuangyb_jg,chuangyb_zd
     
-# 判断基金红绿
-def compareNum(s):
+# 判断基金红绿 flag=1,估值 flag=0,净值 用于优化终端显示效果
+def compareNum(s,flag=0):
     color = Colored()
     if float(str(s)[:-1])>0.00:
-        return color.red(s)
+        if flag==1:
+            return color.red('+'+s)
+        else:
+            return color.red(s)
     elif float(str(s)[:-1])<0.00:
         return color.green(s)
 
@@ -150,8 +159,8 @@ if os.path.exists('./my.txt'):
             guzhi,gutime,jingzhi,jingtime = get_value(tmpUrl, executable_path)
         except:
             continue
-        guzhi = compareNum(guzhi)
-        jingzhi = compareNum(jingzhi)
+        guzhi = compareNum(guzhi,flag=0)
+        jingzhi = compareNum(jingzhi,flag=1)
 
         tb.add_row([i,tmpName,guzhi,gutime,jingzhi,jingtime])
     
