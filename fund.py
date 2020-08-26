@@ -17,7 +17,7 @@ chrome_options=Options()
 
 #-----------------------------------------------------
 #根据实际情况修改，修改值为phantomjs的解压目录/bin/phantomjs
-executable_path = 'dependency/phantomjs-2.1.1-macosx/bin/phantomjs'
+executable_path = '/Users/wangzhu/myFile/OpenPackages/phantomjs-2.1.1-macosx/bin/phantomjs'
 #--------等待网页加载时间，根据个人的网络情况自行设定，单位是秒
 wait_time = 1
 #-----------------------------------------------------
@@ -128,16 +128,18 @@ def getDapan(executable_path):
 # 判断基金红绿 flag=1,估值 flag=0,净值 用于优化终端显示效果
 def compareNum(s,flag=0):
     color = Colored()
-    if float(str(s)[:-1])>0.00:
-        if flag==1:
-            return color.red('+'+s)
+    if s!='--':
+        if float(str(s)[:-1])>0.00:
+            if flag==1:
+                return color.red('+'+s)
+            else:
+                return color.red(s)
+        elif float(str(s)[:-1])<0.00:
+            return color.green(s)
         else:
-            return color.red(s)
-    elif float(str(s)[:-1])<0.00:
-        return color.green(s)
+            return color.white(s)
     else:
         return color.white(s)
-
 # 判断大盘红绿
 def compareDapanNum(s1,s2):
     color = Colored()
