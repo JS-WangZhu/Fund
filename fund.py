@@ -9,15 +9,17 @@ from selenium.webdriver.chrome.options import Options
 import warnings
 from colorama import init, Fore, Back, Style
 warnings.filterwarnings("ignore")
-
+import time
 chrome_options=Options()
 #设置chrome浏览器无界面模式
-chrome_options.add_argument('--headless')
+# chrome_options.add_argument('--headless')
 
 
 #-----------------------------------------------------
 #根据实际情况修改，修改值为phantomjs的解压目录/bin/phantomjs
-executable_path = '/Users/wangzhu/myFile/OpenPackages/phantomjs-2.1.1-macosx/bin/phantomjs'
+executable_path = 'dependency/phantomjs-2.1.1-macosx/bin/phantomjs'
+#--------等待网页加载时间，根据个人的网络情况自行设定，单位是秒
+wait_time = 1
 #-----------------------------------------------------
 
 # 定义颜色类
@@ -80,8 +82,11 @@ def get_value(url,executable_path):
     #proxies={'http':'http://113.195.20.205:9999','http':'http://123.55.102.44:9999'}
     #res = requests.get(url,headers=headers,proxies=proxies)
     browser = webdriver.PhantomJS(executable_path=executable_path)
-    # browser = webdriver.Chrome(chrome_options=chrome_options)
+    # browser = webdriver.Chrome(options=chrome_options)
     browser.get(url)
+    js = 'document.getElementsByClassName("ip_tips_btn")[1].getElementsByTagName("span")[0].click()'
+    browser.execute_script(js)
+    time.sleep(wait_time)
     res = browser.page_source
     soup = BeautifulSoup(res, 'html.parser',from_encoding="gb18030")
     dataOfFund = soup.find_all('div', class_='dataOfFund')
@@ -110,7 +115,6 @@ def getDapan(executable_path):
     res = browser.page_source
     soup = BeautifulSoup(res, 'lxml',from_encoding="gb18030")
     dataTables = soup.find_all('tbody')
-#     print(dataTables)
 
     jiage =  dataTables[0].find_all('td','mywidth2')
     shangz_jg = jiage[0].get_text()
@@ -131,6 +135,8 @@ def compareNum(s,flag=0):
             return color.red(s)
     elif float(str(s)[:-1])<0.00:
         return color.green(s)
+    else:
+        return color.white(s)
 
 # 判断大盘红绿
 def compareDapanNum(s1,s2):
@@ -139,6 +145,8 @@ def compareDapanNum(s1,s2):
         return color.red('+'+s1),color.red(s2)
     elif float(str(s1)[:-1])<0.00:
         return color.green(s1),color.green(s2)
+    else:
+        return color.white(s1),color.white(s2)
 
 if os.path.exists('./my.txt'):
     f = open('./my.txt','r')
@@ -164,8 +172,11 @@ if os.path.exists('./my.txt'):
 
         tb.add_row([i,tmpName,guzhi,gutime,jingzhi,jingtime])
     
-    tb1 = pt.PrettyTable(['上证指数','上证涨跌','深证成指','深证涨跌','创业板指','创业板涨跌'])
-    tb1.add_row([shangz_jg,shangz_zd,shenz_jg,shenz_zd,chuangyb_jg,chuangyb_zd])
+
+    tb1 = pt.PrettyTable(['大盘','上证指数','深证成指','创业板指'])
+    tb1.add_row(['价格',shangz_jg,shenz_jg,chuangyb_jg])
+    tb1.add_row(['涨幅',shangz_zd,shenz_zd,chuangyb_zd])
+
     print(tb1)
     print(tb)
     
